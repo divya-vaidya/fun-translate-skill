@@ -1,0 +1,104 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "fun translate",
+            "intents": [
+                {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "TranslateIntent",
+                    "slots": [
+                        {
+                            "name": "sentence",
+                            "type": "AMAZON.SearchQuery"
+                        }
+                    ],
+                    "samples": [
+                        "translation of {sentence}",
+                        "how to say {sentence}",
+                        "say {sentence}",
+                        "what is {sentence} ",
+                        "how do you say {sentence}",
+                        "translate {sentence}"
+                    ]
+                },
+                {
+                    "name": "SetLanguageIntent",
+                    "slots": [
+                        {
+                            "name": "language",
+                            "type": "language"
+                        }
+                    ],
+                    "samples": [
+                        "{language}",
+                        "translate to {language}",
+                        "set language to {language}",
+                        "choose {language} option"
+                    ]
+                },
+                {
+                    "name": "AMAZON.RepeatIntent",
+                    "samples": [
+                        "repeat the phrase",
+                        "repeat the sentence"
+                    ]
+                },
+                {
+                    "name": "AskSetLanguageIntent",
+                    "slots": [],
+                    "samples": [
+                        "what is the language currently set to",
+                        "what is the target language",
+                        "language option chosen currently",
+                        "language set",
+                        "what language is currently set"
+                     ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "language",
+                    "values": [
+                        {
+                            "id": "OLDENG",
+                            "name": {
+                                "value": "shakespeare"
+                            }
+                        },
+                        {
+                            "id": "PIG",
+                            "name": {
+                                "value": "pig latin"
+                            }
+                        },
+                        {
+                            "id": "GOT",
+                            "name": {
+                                "value": "dothraki"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
