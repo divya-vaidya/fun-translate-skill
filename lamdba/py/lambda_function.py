@@ -16,6 +16,14 @@ from ask_sdk_core.dispatch_components import (
     AbstractResponseInterceptor, AbstractRequestInterceptor)
 from ask_sdk_core.utils import is_intent_name, is_request_type, get_slot_value
 
+"""
+REVISION MADE: 3/9/2019 by Divya Vaidya
+Added .set_should_end_session(False) to response_builder for all handle methods in the following
+handlers: LaunchRequestHandler, HelpIntentHandler, SetLanguageIntentHandler, AskSetLanguageIntentHandler, 
+FunTranslateIntentHandler, NoTargetLanguageIntentHandler and RepeatIntentHandler, 
+to stop the skill from being exited prematurely.
+"""
+
 # Initialising clients and resources required for AWS products used within the application 
 # as well as the required environment variables
 # External products/APIs used:
@@ -66,8 +74,8 @@ class LaunchRequestHandler(AbstractRequestHandler):
                   'Please first select a target language to set. You can choose from Dothraki, Pig Latin or Shakespeare. '
                   'For more information, please say "Help"'
                  );
-        reprompt = "What do you want to do?";
-        handler_input.response_builder.speak(speech).ask(reprompt);
+        # reprompt = "What do you want to do?";
+        handler_input.response_builder.speak(speech).set_should_end_session(False);
         return handler_input.response_builder.response;
                 
 """ Handler used when session is ended in order to exit skill
@@ -107,7 +115,7 @@ class HelpIntentHandler(AbstractRequestHandler):
                                              'Once you have chosen a language, you can then say the phrase you want translated. For example, you can say: "How do you say Hello", '
                                              'or even ask Fun Translate to repeat the translated phrase by saying: "Please repeat the translation. '
                                              'To find out what you have set the language to, please ask me "What is the target language?". Please note that '
-                                             'you can only translate 5 sentences or phrases in the space of an hour.').ask('What do you want to do');
+                                             'you can only translate 5 sentences or phrases in the space of an hour.').set_should_end_session(False);
                                       
         return handler_input.response_builder.response
 
@@ -193,7 +201,7 @@ class AskSetLanguageIntentHandler(AbstractRequestHandler):
         else:
             outputSpeech = "The language is currently set to {}".format(attr["language"]);
             
-        return handler_input.response_builder.speak(outputSpeech).response;
+        return handler_input.response_builder.speak(outputSpeech).set_should_end_session(False).response;
   
 """ Handler used to translate the phrase spoken by the user. The handler takes in the 
     captured phrase and utilises the utility functions below to first check if the 
@@ -257,7 +265,7 @@ class FunTranslateIntentHandler(AbstractRequestHandler):
                 if selected_language == "piglatin":
                     selected_language = "pig latin"
                 output = handler_input.response_builder.speak('The translation of the phrase {} in {} is: '.format(sentence, selected_language) + tableEntry['Item']['value']['url'] +
-                                                                ' You can ask me to repeat the sentence by saying repeat, or ask me to translate something else. Remember, you can only translate 5 sentences in the space of an hour' );
+                                                                ' You can ask me to repeat the sentence by saying repeat, or ask me to translate something else. Remember, you can only translate 5 sentences in the space of an hour' ).set_should_end_session(False);
             except Exception as e:
                 
                 # Any exceptions are caught and relayed back to the user as an error
@@ -315,7 +323,7 @@ class FunTranslateIntentHandler(AbstractRequestHandler):
                         if selected_language == "piglatin":
                             selected_language = "pig latin"
                         output = handler_input.response_builder.speak('The translation of the phrase {} in {} is: '.format(sentence, selected_language) + url +
-                                                                        ' You can ask me to repeat the sentence by saying repeat, or ask me to translate something else. Remember, you can only translate 5 sentences in the space of an hour' );
+                                                                        ' You can ask me to repeat the sentence by saying repeat, or ask me to translate something else. Remember, you can only translate 5 sentences in the space of an hour' ).set_should_end_session(False);
                         
                         # Once all the necessary translation steps are taken, then
                         # the key, translation and url are uploaded to the DynamoDB table
@@ -357,7 +365,7 @@ class NoTargetLanguageIntentHandler(AbstractRequestHandler):
         speech = ('Please select a target translation language before attempting '
                   'to translate a phrase. '
                   'You can select from Pig Latin, Dothraki and Shakespeare. Thank you.');
-        return handler_input.response_builder.speak(speech).response;
+        return handler_input.response_builder.speak(speech).set_should_end_session(False).response;
 
 """ Handler used to repeat the translated phrase back to the user, when they wish to hear
     it again. The handler uses the last file key session attribute logged when the phrase 
@@ -419,7 +427,7 @@ class RepeatIntentHandler(AbstractRequestHandler):
                 outputSpeech = "I'm sorry, there was an error in attempting to repeat the phrase"
             
         # The phrase to repeat is played back to the user
-        return handler_input.response_builder.speak(outputSpeech).response;
+        return handler_input.response_builder.speak(outputSpeech).set_should_end_session(False).response;
         
 # Utility functions
 """ Function used to make API call to translate the input phrase from English into
@@ -631,5 +639,6 @@ sb.add_request_handler(RepeatIntentHandler());
 sb.add_request_handler(HelpIntentHandler());
 sb.add_request_handler(ExitIntentHandler());
 sb.add_request_handler(SessionEndedRequestHandler());
+
 
 lambda_handler = sb.lambda_handler();
